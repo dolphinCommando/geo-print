@@ -15,13 +15,21 @@ function getLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(showPosition);
     } else { 
-        x.innerHTML = "Geolocation is not supported by this browser.";
+        x.innerHTML = 'Geolocation is not supported by this browser.';
     }
 }
 
 function showPosition(position) {
-    x.innerHTML = "Latitude: " + position.coords.latitude + 
-    "<br>Longitude: " + position.coords.longitude;
+    x.innerHTML = `
+	Latitude:  ${position.coords.latitude}  
+    Longitude: ${position.coords.longitude}
+	Accuracy: ${position.coords.accuracy}
+	Altitude: ${position.coords.altitude}
+	Altitude accuracy: ${position.coords.altitudeAccuracy}
+	Heading: ${position.coords.heading}
+	Speed: ${position.coords.speed}
+	Timestamp: ${position.coords.timestamp}
+	`;
 }
 </script>
 
