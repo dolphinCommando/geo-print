@@ -1,5 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Geolocated Data</title>
+	<style>
+		body {
+			font-size: 24px;
+		}
+		button {
+			padding: 40px 70px;
+		}
+	</style>
+</head>
 <body>
 
 <p>Click the button to get your coordinates.</p>
@@ -10,16 +22,18 @@
 
 <script>
 var x = document.getElementById("demo");
+var options = {
+    enableHighAccuracy: true,
+    timeout: 7000,
+    maximumAge: 0
+};
 
 function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-    } else { 
-        x.innerHTML = 'Geolocation is not supported by this browser.';
-    }
+    navigator.geolocation.getCurrentPosition(success, error, options);
+    
 }
 
-function showPosition(position) {
+function success(position) {
     x.innerHTML = `
 	Latitude:  ${position.coords.latitude}  
     Longitude: ${position.coords.longitude}
@@ -31,6 +45,10 @@ function showPosition(position) {
 	Timestamp: ${position.coords.timestamp}
 	`;
 }
+
+function error(err) {
+    console.warn('ERROR(' + err.code + '): ' + err.message);
+};
 </script>
 
 </body>
