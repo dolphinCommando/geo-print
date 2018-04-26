@@ -10,46 +10,24 @@
 		button {
 			padding: 40px 70px;
 		}
+		#map {
+          height: 100%;
+        }
+		
+        html, body {
+          height: 100%;
+          margin: 0;
+          padding: 0;
+        }
+  
 	</style>
 </head>
 <body>
+<div id="map"></div>
 
-<p>Click the button to get your coordinates.</p>
+<script type="text/javascript" src="assets/javascript/code.js"></script>
 
-<button onclick="getLocation()">Try It</button>
-
-<p id="demo"></p>
-
-<script>
-var x = document.getElementById("demo");
-var options = {
-    enableHighAccuracy: true,
-    timeout: 7000,
-    maximumAge: 0
-};
-
-function getLocation() {
-    navigator.geolocation.getCurrentPosition(success, error, options);
-    
-}
-
-function success(position) {
-    x.innerHTML = `
-	Latitude:  ${position.coords.latitude}  
-    Longitude: ${position.coords.longitude}
-	Accuracy: ${position.coords.accuracy}
-	Altitude: ${position.coords.altitude}
-	Altitude accuracy: ${position.coords.altitudeAccuracy}
-	Heading: ${position.coords.heading}
-	Speed: ${position.coords.speed}
-	Timestamp: ${position.coords.timestamp}
-	`;
-}
-
-function error(err) {
-    console.warn('ERROR(' + err.code + '): ' + err.message);
-};
-</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyATOjVsyB1PCNt7ScsGnxoFGwy96ltFErQ&callback=initMap"></script>
 
 </body>
 </html>
