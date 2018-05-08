@@ -9,10 +9,11 @@
 <div id="map"></div>
 <div id="comment">
   <strong>Write something on your location.</strong>
-  <form>
-  	<textarea rows="4" cols="50" id="comment-input"></textarea>
+  <form name="comment-form">
+  	<textarea rows="4" cols="50" name="comment-text"></textarea>
+	<button type="submit" id="comment-submit">Add Comment</button>
   </form>
-  <button type="submit" id="comment-submit">Add Comment</button>
+  
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>

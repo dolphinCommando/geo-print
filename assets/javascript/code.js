@@ -1,4 +1,5 @@
 var map, infoWindow;
+markers = [];
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 35.000, lng: -85.000},
@@ -17,10 +18,14 @@ function initMap() {
         lat: position.coords.latitude,
         lng: position.coords.longitude
       };
-      firebase.database().ref('position').set({pos});
+      firebase.database().ref('position').set({
+        lat: pos.lat,
+        lng: pos.lng
+      });
       map.setCenter(pos);
 	  var marker = new google.maps.Marker({
           position: pos,
+          label: '@',
           map: map
       });
 	  var circle = new google.maps.Circle({
@@ -57,34 +62,81 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   infoWindow.open(map);
 }
 
-firebase.database().ref().on('child_added', function(snapshot) {
+firebase.database().ref().on('value', function(snapshot) {
   console.log(JSON.stringify(snapshot.val()));
-    /*var pos = {
-      lat: snapshot.val().lat,
-      lng: snapshot.val().lng
+  var lat = snapshot.child('position').val().lat;
+  var lng = snapshot.child('position').val().lng;
+  deleteMarkers();
+  snapshot.child('comments').forEach(function(childSnapshot) {
+    if (!childSnapshot.val().updated) {
+      updateCommentCoords(childSnapshot.key, lat, lng);
     }
-    var clickableMarker = new google.maps.Marker({
-      position: pos,
-      clickable: true
-    });
+      var marker = new google.maps.Marker({
+        position: {
+          lat: childSnapshot.val().lat,
+          lng: childSnapshot.val().lng
+        },
+        title: childSnapshot.val().date,
+        map: map,
+      });
 
-    clickableMarker.addEventListener('click', function() {
+      var infowindow = new google.maps.InfoWindow({
+        content: childSnapshot.val().comment
+      });
+
+      marker.addListener('click', function() {
+        infowindow.open(map, marker);
+      });
+
+      markers.push(marker);
+
+    /*
       infoWindow = new google.maps.InfoWindow;
-      infoWindow.setPosition(pos);
-      infoWindow.setContent(comment);
+      infoWindow.setPosition(snapshot.child('position').val());
+      infoWindow.setContent(childSnapshot.val().comment);
       infoWindow.open(map);
-    });
-  */
+    */
+  });
+  displayMarkers();
 });
 
 document.getElementById('comment-submit').addEventListener('click', function(event) {
   event.preventDefault();
-  var comment = document.getElementById('comment-input').textContent;
+  var comment = document.forms['comment-form']['comment-text'].value;
+  var myDate = new Date();
+  var now = `${myDate.getHours()}:${myDate.getHours()} ${myDate.getMonth()}/${myDate.getDate()}/${myDate.getFullYear()}`;
     var newComment = firebase.database().ref('comments').push();
     newComment.set({
-      comment: comment
+      comment: comment,
+      lat: '',
+      lng: '',
+      date: now,
+      updated: false
     });
 });
+
+function updateCommentCoords(key, lat, lng) {
+  firebase.database().ref(`comments/${key}`).update({
+    lat: lat,
+    lng: lng,
+    updated: true
+  });
+}
+
+function setMapOnAll(map) {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(map);
+  }
+} 
+
+function deleteMarkers() {
+  setMapOnAll(null);
+  markers = [];
+}
+
+function displayMarkers() {
+  setMapOnAll(map);
+}
 
 
 
