@@ -3,27 +3,31 @@
 <head>
 	<meta charset="utf-8">
 	<title>Geolocated Data</title>
-	<style>
-		body {
-			font-size: 24px;
-		}
-		button {
-			padding: 40px 70px;
-		}
-		#map {
-          height: 100%;
-        }
-		
-        html, body {
-          height: 100%;
-          margin: 0;
-          padding: 0;
-        }
-  
-	</style>
+	<link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 <div id="map"></div>
+<div id="comment">
+  <strong>Write something on your location.</strong>
+  <form>
+  	<textarea rows="4" cols="50" id="comment-input"></textarea>
+  </form>
+  <button type="submit" id="comment-submit">Add Comment</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
+<script>
+// Initialize Firebase
+var config = {
+  apiKey: "AIzaSyDRZqATtGXaC66NuO0weSvfkTDHn2MbaHA",
+  authDomain: "geo-print-1524698454425.firebaseapp.com",
+  databaseURL: "https://geo-print-1524698454425.firebaseio.com",
+  projectId: "geo-print-1524698454425",
+  storageBucket: "",
+  messagingSenderId: "484224507581"
+};
+firebase.initializeApp(config);
+</script>
 
 <script type="text/javascript" src="assets/javascript/code.js"></script>
 

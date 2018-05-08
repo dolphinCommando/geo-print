@@ -2,19 +2,22 @@ var map, infoWindow;
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 35.000, lng: -85.000},
-    zoom: 4
+    zoom: 4,
+    mapTypeControl: true,
+    mapTypeControlOptions: {
+      style: google.maps.MapTypeControlStyle.DEFAULT,
+      position: google.maps.ControlPosition.TOP_LEFT
+    }
   });
-  //infoWindow = new google.maps.InfoWindow;
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
+      document.getElementById('comment').style.display = 'block';
       var pos = {
         lat: position.coords.latitude,
         lng: position.coords.longitude
       };
-      //infoWindow.setPosition(pos);
-      //infoWindow.setContent('Location found.');
-      //infoWindow.open(map);
+      firebase.database().ref('position').set({pos});
       map.setCenter(pos);
 	  var marker = new google.maps.Marker({
           position: pos,
@@ -53,3 +56,36 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   infoWindow.setContent(browserHasGeolocation ? 'Error: The Geolocation service failed.' : 'Error: Your browser doesn\'t support geolocation.');
   infoWindow.open(map);
 }
+
+firebase.database().ref().on('child_added', function(snapshot) {
+  console.log(JSON.stringify(snapshot.val()));
+    /*var pos = {
+      lat: snapshot.val().lat,
+      lng: snapshot.val().lng
+    }
+    var clickableMarker = new google.maps.Marker({
+      position: pos,
+      clickable: true
+    });
+
+    clickableMarker.addEventListener('click', function() {
+      infoWindow = new google.maps.InfoWindow;
+      infoWindow.setPosition(pos);
+      infoWindow.setContent(comment);
+      infoWindow.open(map);
+    });
+  */
+});
+
+document.getElementById('comment-submit').addEventListener('click', function(event) {
+  event.preventDefault();
+  var comment = document.getElementById('comment-input').textContent;
+    var newComment = firebase.database().ref('comments').push();
+    newComment.set({
+      comment: comment
+    });
+});
+
+
+
+
